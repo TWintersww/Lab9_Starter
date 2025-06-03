@@ -87,7 +87,14 @@
     </section>
   </main>
 
+  <script src="https://cdn.trackjs.com/agent/v3/latest/t.js"></script>
+
   <script>
+    window.TrackJS && TrackJS.install({ 
+        token: "50f0ca70b8964e30bc33ae9f9e890d89"
+        // for more configuration options, see https://docs.trackjs.com
+      });
+
     let form = document.querySelector('form');
     form.addEventListener('submit', e => {
       e.preventDefault();
@@ -102,6 +109,127 @@
 
     // Start your code here
     // You may move this JS to another file if you wish
+    let logButton = errorBtns[0];
+    logButton.addEventListener('click', () => console.log('Console log'));
+
+    let errorButton = errorBtns[1];
+    errorButton.addEventListener('click', () => console.error('Console error'));
+
+    let countButton = errorBtns[2];
+    countButton.addEventListener('click', () => {console.count('count');});
+
+    let warnButton = errorBtns[3];
+    warnButton.addEventListener('click', () => console.warn('Console warn'));
+
+    const x = 3;
+    const y = 2;
+    const reason = 'x is supposed to be less than y';
+    let assertButton = errorBtns[4];
+    assertButton.addEventListener('click', () => console.assert(x < y, {x, y, reason}));
+
+    let clearButton = errorBtns[5];
+    clearButton.addEventListener('click', () => console.clear());
+
+    let dirButton = errorBtns[6];
+    dirButton.addEventListener('click', () => console.dir(document.querySelector("#error-btns")));
+
+    let dirxmlButton = errorBtns[7];
+    dirxmlButton.addEventListener('click', () => console.dirxml(document.querySelector("#error-btns")));
+
+    let groupstartButton = errorBtns[8];
+    groupstartButton.addEventListener('click', () => console.group('custom group'));
+
+    let groupendButton = errorBtns[9];
+    groupendButton.addEventListener('click', () => console.groupEnd('custom group'));
+
+    let tableButton = errorBtns[10];
+    tableButton.addEventListener('click', () => {
+      let people = [{
+          name: "bob",
+          age: 50
+        },
+        {
+          name: "sharon",
+          age: 34
+        },
+        {
+          name: "aaron",
+          age: 18
+        }
+      ];
+
+      console.table(people);
+    })
+
+    let timerstartButton = errorBtns[11];
+    timerstartButton.addEventListener('click', () => console.time());
+
+    let timerendButton = errorBtns[12];
+    timerendButton.addEventListener('click', () => console.timeEnd());
+
+    let traceButton = errorBtns[13];
+    traceButton.addEventListener('click', () => {
+      const outer = () => {nest()};
+      const nest = () => {nestnest()};
+      const nestnest = () => {console.trace()};
+
+      outer();
+    });
+
+    window.addEventListener('error', (e) => {
+      console.log('Global error occurred:', e.message);
+    });
+    let globalButton = errorBtns[14];
+    globalButton.addEventListener('click', () => {
+      undefinedFn();
+    });
+
+
+
+    const tryCatchDemo = () => {
+      console.group('tryCatchDemo');
+      try {
+        //missing await in this fetch call prevents the request from working
+        const fetchAttempt = fetch("/api");
+        if (!fetchAttempt.ok) {
+          throw new Error("unsuccessful fetch attempt");
+        }
+      }
+      catch (e) {
+        console.error(e.message);
+      }
+      finally {
+        console.log('tryCatchDemo() finished running');
+      }
+      console.groupEnd('tryCatchDemo');
+    }
+    tryCatchDemo();
+
+    class NotEvenError extends Error {
+      constructor(message) {
+        super(message);
+        this.name = "NotEvenError";
+      }
+    }
+    function isEven(number) {
+      console.group(`isEven ${number}`);
+      try {
+        if (number % 2 === 0) {
+          console.log("number is even");
+        }
+        else {
+          throw new NotEvenError("number not even");
+        }
+      }
+      catch (e) {
+        console.error(e.message);
+      }
+      console.groupEnd(`isEven ${number}`);
+    }
+
+    isEven(2);
+    isEven(1);
+
   </script>
 </body>
 
